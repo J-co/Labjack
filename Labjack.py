@@ -3,9 +3,10 @@ from labjack import ljm
 
 class Labjack:
     def __init__(self):
-        self.proxyBoardPinNames = []
+        self.proxyBoardPinNames = ["IBIA", "IDB",
+                                   "IREF", "VTES", "ITHR", "VCN", "VCN2", "VCP", "VCLP", "VRST", "VPL", "VPH"]
         self.labjackPinNames = ["AIN0", "AIN1", "AIN2", "AIN3", "AIN4",
-                                "AIN5", "AIN6", "AIN7", "AIN8", "AIN9", "AIN10", "AIN11", "AIN12"]
+                                "AIN5", "AIN6", "AIN7", "AIN8", "AIN9", "AIN10", "AIN11"]
         self.labjackHandle = None
         self.labjackNumFrames = len(self.labjackPinNames)
 
@@ -25,5 +26,5 @@ class Labjack:
         print("\neReadNames results: ")
         for i in range(self.labjackNumFrames):
             print("    Name - %s, value : %f" %
-                  (self.labjackPinNames[i], results[i]))
+                  (self.proxyBoardPinNames[i], results[i]))
         return results
