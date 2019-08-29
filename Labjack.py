@@ -4,7 +4,7 @@ from labjack import ljm
 class Labjack:
     """ 
     Class that connects/disconnects to a labjack handle
-     and reads the first 12 analog input pins
+     and reads the first 12 analog input pins and returns them in mV
     """
 
     def __init__(self):
