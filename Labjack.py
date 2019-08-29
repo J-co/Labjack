@@ -2,6 +2,11 @@ from labjack import ljm
 
 
 class Labjack:
+    """ 
+    Class that connects/disconnects to a labjack handle
+     and reads the first 12 analog input pins
+    """
+
     def __init__(self):
         self.proxyBoardPinNames = ["IBIA", "IDB",
                                    "IREF", "VTES", "ITHR", "VCN", "VCN2", "VCP", "VCLP", "VRST", "VPL", "VPH"]
@@ -23,8 +28,10 @@ class Labjack:
     def readLabjack(self):
         results = ljm.eReadNames(
             self.labjackHandle, self.labjackNumFrames, self.labjackPinNames)
+        # convert to mV and round
+        results = [round(elem*1000, 2) for elem in results]
         print("\neReadNames results: ")
         for i in range(self.labjackNumFrames):
-            print("    Name - %s, value : %f" %
+            print("    Name - %s, value [mV]: %f" %
                   (self.proxyBoardPinNames[i], results[i]))
         return results
