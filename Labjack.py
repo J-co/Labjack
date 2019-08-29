@@ -22,6 +22,9 @@ class Labjack:
               "Serial number: %i, IP address: %s, Port: %i,\nMax bytes per MB: %i" %
               (info[0], info[1], info[2], ljm.numberToIP(info[3]), info[4], info[5]))
 
+        ljm.eWriteName(self.labjackHandle, "AIN_ALL_RANGE", 10.0)
+        ljm.eWriteName(self.labjackHandle, "AIN_ALL_RESOLUTION_INDEX", 8)
+
     def disconnectLabjack(self):
         ljm.close(self.labjackHandle)
 

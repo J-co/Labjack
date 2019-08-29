@@ -1,6 +1,6 @@
 """
 This is a script that starts a continuous readout of the analog input pins
-of the the Labjack T7 and saves them to a csv file. Additionally a PT100 
+of the the Labjack T7 and saves them to a csv file. Additionally a PT100
 sensor is read out and saved as well.
 
 Invoke this script from terminal like:
@@ -42,11 +42,17 @@ def readPT100(nSensors):
     # This function reads all 8 channels of the PT100 readout device
     # and returns the first nSensors
     temperatures = []
+    PT100SerialPort.reset_input_buffer()
     for i in range(8):
         serialTemp = PT100SerialPort.readline()
         tempHex = serialTemp[6:10]
-        temp = int(tempHex, 16) / 1000.0
+        try:
+            temp = int(tempHex, 16) / 1000.0
+        except Exception:
+            print("Cannot read PT100")
+            temp = float('nan')
         temperatures.append(temp)
+
     return temperatures[:nSensors]
 
 
@@ -60,6 +66,7 @@ try:
     while True:
         labjackResults = Labjack.readLabjack()
         temperatures = readPT100(1)
+        print("Temperature:%f" % temperatures[0])
         currentTime = datetime.datetime.now()
         data = [currentTime, temperatures[0]]
         data.extend(labjackResults)
