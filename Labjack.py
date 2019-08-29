@@ -1,4 +1,5 @@
 from labjack import ljm
+import numpy as np
 
 
 class Labjack:
@@ -13,7 +14,7 @@ class Labjack:
         self.labjackPinNames = ["AIN0", "AIN1", "AIN2", "AIN3", "AIN4",
                                 "AIN5", "AIN6", "AIN7", "AIN8", "AIN9", "AIN10", "AIN11"]
         self.labjackHandle = None
-        self.labjackNumFrames = len(self.labjackPinNames)
+        self.labjackNumChannels = len(self.labjackPinNames)
 
     def connectLabjack(self):
         self.labjackHandle = ljm.openS("T7", "ANY", "ANY")
@@ -30,11 +31,19 @@ class Labjack:
 
     def readLabjack(self):
         results = ljm.eReadNames(
-            self.labjackHandle, self.labjackNumFrames, self.labjackPinNames)
+            self.labjackHandle, self.labjackNumChannels, self.labjackPinNames)
         # convert to mV and round
         results = [round(elem*1000, 2) for elem in results]
         print("\neReadNames results: ")
-        for i in range(self.labjackNumFrames):
+        for i in range(self.labjackNumChannels):
             print("    Name - %s, value [mV]: %f" %
                   (self.proxyBoardPinNames[i], results[i]))
         return results
+
+    def readLabjackMean(self, repetitions):
+        results = np.zeros((self.labjackNumChannels, repetitions))
+        for i in range(repetitions):
+            singleRead = self.readLabjack()
+            results[:, i] = singleRead
+        meanResult = np.mean(results, axis=1)
+        return meanResult
